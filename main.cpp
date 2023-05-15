@@ -128,6 +128,14 @@ void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int 
             return;
         }
 
+        // cout << "Expanding node with g(n) = " << current.depth << " and h(n) = " << current.evaluate - current.depth << ":\n";
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < n; j++) {
+        //         cout << current.state[i][j] << " ";
+        //     }    
+        //     cout << "\n";
+        // }
+
         nodesExpanded++;
 
         // Add neighbors to queue
@@ -205,7 +213,7 @@ int main() {
         }
     }
 
-    cout << "Choose your heuristic. Type '1' for Uniform Cost, '2' for Misplaced Tile, or '3' for Manhattan Distance\n";
+    cout << "\nChoose your heuristic. Type '1' for Uniform Cost, '2' for Misplaced Tile, or '3' for Manhattan Distance\n";
     cin >> input;
 
     // Recording the timestamp at the start of the code
