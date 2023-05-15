@@ -7,6 +7,14 @@ int n = 3; // Number of rows and cols in the n x n board
 struct node {
     vector<vector<int>> state;
     int depth;
+    int evaluate;
+
+    // Comparator for nodes
+    bool operator<(node const& a) const
+    {
+        // Put the higher f(n) on top    
+        return evaluate > a.evaluate;
+    }
 };
 
 void initializeDefaultPuzzle(vector<vector<int>> &board) {
@@ -53,6 +61,24 @@ void initializeDefaultPuzzle(vector<vector<int>> &board) {
     }
 }
 
+// Uniform cost heuristic, f(n) = 0
+int uniformCost(vector<vector<int>>  board, vector<vector<int>>  target) {
+    return 0;
+}
+
+// Uniform cost heuristic, f(n) = number of misplaced tiles
+int misplacedTile(vector<vector<int>>  board, vector<vector<int>>  target) {
+    int numMisplaced = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if(board[i][j] != target[i][j])
+                numMisplaced++;
+        }    
+    }
+    return numMisplaced;
+}
+ 
+
 bool isRepeat(vector<vector<int>> & board, unordered_map<string, bool> & map) {
     string key = "";
     for (int i = 0; i < n; i++) {
@@ -70,9 +96,9 @@ bool isRepeat(vector<vector<int>> & board, unordered_map<string, bool> & map) {
     }
 }
 
-void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target) {
+void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int (*heuristicFunc)(vector<vector<int>>, vector<vector<int>>)) {
     unordered_map<string, bool>  map;
-    queue<node> queue;
+    priority_queue<node> queue;
 
     int nodesExpanded = 0;
     int maxQueueSize = 1;
@@ -80,10 +106,11 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
     node current;
     current.state = board;
     current.depth = 0;
+    current.evaluate = heuristicFunc(current.state, target);
     queue.push(current);
 
     while(!queue.empty()) {
-        current = queue.front();
+        current = queue.top();
         queue.pop();
 
         // Skip current if board is a repeat
@@ -110,6 +137,7 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
                         next.state = current.state;
                         swap(next.state[i-1][j], next.state[i][j]);
                         next.depth = current.depth + 1;
+                        next.evaluate = next.depth + heuristicFunc(next.state, target);
                         queue.push(next);
                     }
                     // Add down to queue
@@ -117,6 +145,7 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
                         next.state = current.state;
                         swap(next.state[i+1][j], next.state[i][j]);
                         next.depth = current.depth + 1;
+                        next.evaluate = next.depth + heuristicFunc(next.state, target);
                         queue.push(next);
                     }
                     // Add left to queue
@@ -124,6 +153,7 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
                         next.state = current.state;
                         swap(next.state[i][j - 1], next.state[i][j]);
                         next.depth = current.depth + 1;
+                        next.evaluate = next.depth + heuristicFunc(next.state, target);
                         queue.push(next);
                     }
                     // Add right to queue
@@ -131,6 +161,7 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
                         next.state = current.state;
                         swap(next.state[i][j + 1], next.state[i][j]);
                         next.depth = current.depth + 1;
+                        next.evaluate = next.depth + heuristicFunc(next.state, target);
                         queue.push(next);
                     }
                 }
@@ -140,14 +171,6 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
             maxQueueSize = queue.size();
     }
     cout << "Failure!";
-}
-
-void AStarMisplacedTile(vector<vector<int>> board) {
-
-}
-
-void AStarManhattan(vector<vector<int>> board) {
-
 }
 
 int main() {
@@ -179,7 +202,7 @@ int main() {
         }
     }
 
-    uniformCostSearch(board, target);
+    AStarSearch(board, target, &misplacedTile);
 
     cout << "\n";
     for (int i = 0; i < n; i++) {
