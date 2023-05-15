@@ -49,9 +49,9 @@ void initializeDefaultPuzzle(vector<vector<int>> &board) {
             board.push_back({7,8,6});
             break;
         case 5:
-            board.push_back({8,7,1});
-            board.push_back({6,0,2});
-            board.push_back({5,4,3});
+            board.push_back({0,7,2});
+            board.push_back({4,6,1});
+            board.push_back({3,5,8});
             break;
         default:
             board.push_back({1,2,3});
@@ -66,7 +66,7 @@ int uniformCost(vector<vector<int>>  board, vector<vector<int>>  target) {
     return 0;
 }
 
-// Uniform cost heuristic, f(n) = number of misplaced tiles
+// Misplaced tile heuristic, f(n) = number of misplaced tiles
 int misplacedTile(vector<vector<int>>  board, vector<vector<int>>  target) {
     int numMisplaced = 0;
     for (int i = 0; i < n; i++) {
@@ -76,6 +76,18 @@ int misplacedTile(vector<vector<int>>  board, vector<vector<int>>  target) {
         }    
     }
     return numMisplaced;
+}
+
+// Manhattan distance heuristic, f(n) = total manhattan distance for each tile
+int manhattan(vector<vector<int>>  board, vector<vector<int>> target) {
+    int correct[9][2] = {{2,2}, {0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {1,2}, {2,0}, {2,1}};
+    int totalDistance = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            totalDistance += abs(correct[board[i][j]][0] - i) + abs(correct[board[i][j]][1] - j);
+        }    
+    }
+    return totalDistance;
 }
  
 
@@ -202,7 +214,7 @@ int main() {
         }
     }
 
-    AStarSearch(board, target, &misplacedTile);
+    AStarSearch(board, target, &uniformCost);
 
     cout << "\n";
     for (int i = 0; i < n; i++) {
