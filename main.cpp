@@ -20,44 +20,35 @@ struct node {
 void initializeDefaultPuzzle(vector<vector<int>> &board) {
     int input;
     cout << "Please enter a puzzle difficulty\n"
-        << "1 = Trivial\n"
-        << "2 = Very Easy\n"
-        << "3 = Easy\n"
-        << "4 = Medium\n"
-        << "5 = Hard\n";
+        << "1 = Depth 0\n"
+        << "2 = Depth 2\n"
+        << "3 = Depth 4\n"
+        << "4 = Depth 8\n"
+        << "5 = Depth 12\n"
+        << "6 = Depth 16\n"
+        << "7 = Depth 20\n"
+        << "8 = Depth 24\n";
 
     cin >> input;
     switch(input) {
-        case 1:
-            board.push_back({1,2,3});
-            board.push_back({4,5,6});
-            board.push_back({7,8,0});
-            break;
-        case 2:
-            board.push_back({1,2,3});
-            board.push_back({4,5,6});
-            board.push_back({7,0,8});
-            break;
-        case 3:
-            board.push_back({1,2,3});
-            board.push_back({0,5,6});
-            board.push_back({4,7,8});
-            break;
-        case 4:
-            board.push_back({0,1,2});
-            board.push_back({4,5,3});
-            board.push_back({7,8,6});
-            break;
-        case 5:
-            board.push_back({0,7,2});
-            board.push_back({4,6,1});
-            board.push_back({3,5,8});
-            break;
+        case 1: // Depth = 0
+            board.push_back({1,2,3}); board.push_back({4,5,6}); board.push_back({7,8,0}); break;
+        case 2: // Depth = 2
+            board.push_back({1,2,3}); board.push_back({4,5,6}); board.push_back({0,7,8}); break;
+        case 3: // Depth = 4
+            board.push_back({1,2,3}); board.push_back({5,0,6}); board.push_back({4,7,8});break;
+        case 4: // Depth = 8
+            board.push_back({1,3,6}); board.push_back({5,0,2}); board.push_back({4,7,8});break;
+        case 5: // Depth 12
+            board.push_back({1,3,6}); board.push_back({5,0,7}); board.push_back({4,8,2}); break;
+        case 6: // Depth 16
+            board.push_back({1,6,7}); board.push_back({5,0,3}); board.push_back({4,8,2}); break;
+        case 7: // Depth 20
+            board.push_back({7,1,2}); board.push_back({4,8,5}); board.push_back({6,3,0}); break;
+        case 8: // Depth 24
+            board.push_back({0,7,2}); board.push_back({4,6,1}); board.push_back({3,5,8}); break;
         default:
-            board.push_back({1,2,3});
-            board.push_back({4,5,6});
-            board.push_back({7,8,0});
-            break;
+            board.push_back({1,2,3}); board.push_back({4,5,6}); board.push_back({7,8,0}); break;
     }
 }
 
@@ -214,15 +205,38 @@ int main() {
         }
     }
 
-    AStarSearch(board, target, &uniformCost);
+    cout << "Choose your heuristic. Type '1' for Uniform Cost, '2' for Misplaced Tile, or '3' for Manhattan Distance\n";
+    cin >> input;
 
-    cout << "\n";
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << board[i][j] << " ";
-        }    
-        cout << "\n";
+    // Recording the timestamp at the start of the code
+    auto beg = chrono::high_resolution_clock::now();
+    switch(input) {
+        case 1:
+            AStarSearch(board, target, &uniformCost);
+            break;
+        case 2:
+            AStarSearch(board, target, &misplacedTile);
+            break;
+        case 3:
+            AStarSearch(board, target, &manhattan);
+            break;
+        default:
+            "Error: invalid input";
+            break;
     }
+    auto end = chrono::high_resolution_clock::now();
+
+    // Displaying the elapsed time
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - beg);
+    std::cout << "Elapsed Time: " << duration.count() << " milliseconds";
+
+    // cout << "\n";
+    // for (int i = 0; i < n; i++) {
+    //     for (int j = 0; j < n; j++) {
+    //         cout << board[i][j] << " ";
+    //     }    
+    //     cout << "\n";
+    // }
 
     return 0;
 }
