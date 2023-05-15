@@ -32,7 +32,7 @@ void initializeDefaultPuzzle(vector<vector<int>> &board) {
             break;
         case 3:
             board.push_back({1,2,3});
-            board.push_back({5,0,6});
+            board.push_back({0,5,6});
             board.push_back({4,7,8});
             break;
         case 4:
@@ -74,6 +74,9 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
     unordered_map<string, bool>  map;
     queue<node> queue;
 
+    int nodesExpanded = 0;
+    int maxQueueSize = 1;
+
     node current;
     current.state = board;
     current.depth = 0;
@@ -89,14 +92,18 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
 
         // Return if board is the target
         if(current.state == target) {
-            cout << "Target found at depth " << current.depth;
-            break;
+            cout << "\nSolution found at depth " << current.depth << "\n";
+            cout << "Number of nodes expanded: " << nodesExpanded << "\n";
+            cout << "Max queue size: " << maxQueueSize << "\n";
+            return;
         }
+
+        nodesExpanded++;
 
         // Add neighbors to queue
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if(board[i][j] == 0) {
+                if(current.state[i][j] == 0) {
                     node next;
                     // Add up to queue
                     if(i > 0) {
@@ -129,8 +136,10 @@ void uniformCostSearch(vector<vector<int>> & board, vector<vector<int>> & target
                 }
             }    
         }
-        
+        if(queue.size() > maxQueueSize)
+            maxQueueSize = queue.size();
     }
+    cout << "Failure!";
 }
 
 void AStarMisplacedTile(vector<vector<int>> board) {
