@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+int n = 3; // Number of rows and cols in the n x n board
+
 void initializeDefaultPuzzle(vector<vector<int>> &board) {
     int input;
     cout << "Please enter a puzzle difficulty\n"
@@ -46,13 +48,42 @@ void initializeDefaultPuzzle(vector<vector<int>> &board) {
 
 }
 
+bool isRepeat(vector<vector<int>> & board, unordered_map<string, bool> & map) {
+    string key = "";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            key = key + to_string(board[i][j]);
+        }    
+    }
+
+    if(map.find(key) != map.end()) {
+        return true; // Board is a repeat
+    }
+    else {
+        map[key] = 1; // Board is not repeat. Add to map.
+        return false;
+    }
+}
+
+void uniformCostSearch(vector<vector<int>> & board, unordered_map<string, bool> & map, queue<vector<vector<int>>> & queue) {
+    
+}
+
+void AStarMisplacedTile(vector<vector<int>> board) {
+
+}
+
+void AStarManhattan(vector<vector<int>> board) {
+
+}
+
 int main() {
-    // // Fast IO
-    // ios_base::sync_with_stdio(false);
-    // cin.tie(0);
+    // Fast IO
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
 
     vector<vector<int>> board; // 8 puzzle board
-    int n = 3; // Number of rows and cols in the n x n board
+    unordered_map<string, bool> map;
 
     cout << "8-Puzzle Solver. Type '1' to use a default puzzle, or '2' to create your own.\n";
     
@@ -82,5 +113,6 @@ int main() {
         }    
         cout << "\n";
     }
+
     return 0;
 }
