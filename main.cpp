@@ -12,8 +12,12 @@ struct node {
     // Comparator for nodes
     bool operator<(node const& a) const
     {
-        // Put the higher f(n) on top    
+        // Put the higher f(n) on top
+        if(evaluate == a.evaluate)
+            return depth > a.depth;
+        else
         return evaluate > a.evaluate;
+
     }
 };
 
@@ -75,7 +79,8 @@ int manhattan(vector<vector<int>>  board, vector<vector<int>> target) {
     int totalDistance = 0;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            totalDistance += abs(correct[board[i][j]][0] - i) + abs(correct[board[i][j]][1] - j);
+            if(board[i][j] != 0)
+                totalDistance += abs(correct[board[i][j]][0] - i) + abs(correct[board[i][j]][1] - j);
         }    
     }
     return totalDistance;
@@ -116,10 +121,6 @@ void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int 
         current = queue.top();
         queue.pop();
 
-        // Skip current if board is a repeat
-        if(isRepeat(current.state, map))
-            continue;
-
         // Return if board is the target
         if(current.state == target) {
             cout << "\nSolution found at depth " << current.depth << "\n";
@@ -147,33 +148,46 @@ void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int 
                     if(i > 0) {
                         next.state = current.state;
                         swap(next.state[i-1][j], next.state[i][j]);
-                        next.depth = current.depth + 1;
-                        next.evaluate = next.depth + heuristicFunc(next.state, target);
-                        queue.push(next);
+                        // Skip current if board is a repeat
+                        if(!isRepeat(next.state, map)) {
+                            next.depth = current.depth + 1;
+                            next.evaluate = next.depth + heuristicFunc(next.state, target);
+                            queue.push(next);
+                        }
+                        
                     }
                     // Add down to queue
                     if(i < n - 1) {
                         next.state = current.state;
                         swap(next.state[i+1][j], next.state[i][j]);
-                        next.depth = current.depth + 1;
-                        next.evaluate = next.depth + heuristicFunc(next.state, target);
-                        queue.push(next);
+                        // Skip current if board is a repeat
+                        if(!isRepeat(next.state, map)) {
+                            next.depth = current.depth + 1;
+                            next.evaluate = next.depth + heuristicFunc(next.state, target);
+                            queue.push(next);
+                        }
                     }
                     // Add left to queue
                     if(j > 0) {
                         next.state = current.state;
                         swap(next.state[i][j - 1], next.state[i][j]);
-                        next.depth = current.depth + 1;
-                        next.evaluate = next.depth + heuristicFunc(next.state, target);
-                        queue.push(next);
+                        // Skip current if board is a repeat
+                        if(!isRepeat(next.state, map)) {
+                            next.depth = current.depth + 1;
+                            next.evaluate = next.depth + heuristicFunc(next.state, target);
+                            queue.push(next);
+                        }
                     }
                     // Add right to queue
                     if(j < n - 1) {
                         next.state = current.state;
                         swap(next.state[i][j + 1], next.state[i][j]);
-                        next.depth = current.depth + 1;
-                        next.evaluate = next.depth + heuristicFunc(next.state, target);
-                        queue.push(next);
+                        // Skip current if board is a repeat
+                        if(!isRepeat(next.state, map)) {
+                            next.depth = current.depth + 1;
+                            next.evaluate = next.depth + heuristicFunc(next.state, target);
+                            queue.push(next);
+                        }
                     }
                 }
             }    
@@ -181,7 +195,7 @@ void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int 
         if(queue.size() > maxQueueSize)
             maxQueueSize = queue.size();
     }
-    cout << "Failure!";
+    cout << "Failure at depth " << current.depth << "\n";
 }
 
 int main() {
