@@ -129,13 +129,13 @@ void AStarSearch(vector<vector<int>> & board, vector<vector<int>> & target, int 
             return;
         }
 
-        // cout << "Expanding node with g(n) = " << current.depth << " and h(n) = " << current.evaluate - current.depth << ":\n";
-        // for (int i = 0; i < n; i++) {
-        //     for (int j = 0; j < n; j++) {
-        //         cout << current.state[i][j] << " ";
-        //     }    
-        //     cout << "\n";
-        // }
+        cout << "Expanding node with g(n) = " << current.depth << " and h(n) = " << current.evaluate - current.depth << ":\n";
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << current.state[i][j] << " ";
+            }    
+            cout << "\n";
+        }
 
         nodesExpanded++;
 
